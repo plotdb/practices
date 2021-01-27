@@ -1,0 +1,29 @@
+doctype html
+html
+  head
+  body
+    c-e
+    script: :lsc
+      zzz = ->
+        ret = Reflect.construct HTMLElement, [], zzz
+        console.log ret
+        ret.test = 13
+        return ret
+      zzz.observedAttributes = <[hi]>
+      Object.setPrototypeOf zzz.prototype, HTMLElement.prototype
+      Object.setPrototypeOf zzz, HTMLElement
+      zzz.prototype <<< do
+        connectedCallback: -> console.log \connected
+        disconnectedCallback: -> console.log \disconnected
+        adoptedCallback: -> console.log \adopted
+        attributeChangedCallback: (name,o,n) -> console.log "changed: ", name, o, n
+
+        hello: -> console.log \hello
+
+
+      customElements.define("c-e",zzz)
+      node = document.querySelector \c-e
+      console.log node.nodeType, node.nodeName, node.test
+      node.hello!
+      node.setAttribute \hi, 1
+      

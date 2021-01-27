@@ -1,0 +1,38 @@
+<!DOCTYPE html><html><head></head><body><c-e></c-e><script>var zzz, node;
+zzz = function(){
+  var ret;
+  ret = Reflect.construct(HTMLElement, [], zzz);
+  console.log(ret);
+  ret.test = 13;
+  return ret;
+};
+zzz.observedAttributes = ['hi'];
+Object.setPrototypeOf(zzz.prototype, HTMLElement.prototype);
+Object.setPrototypeOf(zzz, HTMLElement);
+import$(zzz.prototype, {
+  connectedCallback: function(){
+    return console.log('connected');
+  },
+  disconnectedCallback: function(){
+    return console.log('disconnected');
+  },
+  adoptedCallback: function(){
+    return console.log('adopted');
+  },
+  attributeChangedCallback: function(name, o, n){
+    return console.log("changed: ", name, o, n);
+  },
+  hello: function(){
+    return console.log('hello');
+  }
+});
+customElements.define("c-e", zzz);
+node = document.querySelector('c-e');
+console.log(node.nodeType, node.nodeName, node.test);
+node.hello();
+node.setAttribute('hi', 1);
+function import$(obj, src){
+  var own = {}.hasOwnProperty;
+  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+  return obj;
+}</script></body></html>
